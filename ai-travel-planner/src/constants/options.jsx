@@ -42,10 +42,10 @@ export const SelectBudgetOptions=[
     },{
         id:3,
         title:'Luxury',
-        desc:'Dnt wory about costs',
+        desc:'Dont wory about costs',
         icon:'💸'
     },
 
 ]
 
-export const AI_PROMPT='Generate Travel Plan for Location: {location{'
+export const AI_PROMPT='Generate Travel Plan for Location: {location}'
