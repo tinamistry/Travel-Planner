@@ -7,8 +7,11 @@ import { SelectTravelsList } from '@/constants/options';
 import { Button } from '@/components/ui/button';
 import { useEffect } from 'react';
 import { generatePath } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
+
 
 function CreateTrip(){
+    const {toast} = useToast()
     const[place,setPlace] = useState();
     const[formData,setFormData] = useState([])
 
@@ -24,11 +27,10 @@ function CreateTrip(){
     },[formData])
 
     const onGenerateTrip = () =>{
-        if(formData.numberOfDays > 5){
-            console.log('Please enter a value greater than or equal to 5')
-            return
-        }
         console.log(formData)
+        if(formData.numberOfDays > 5 && !formData?.location|| !formData?.budget||!formData?.people){
+           toast({title: "Please enter all fields"})
+        }
     }
 
     return(
