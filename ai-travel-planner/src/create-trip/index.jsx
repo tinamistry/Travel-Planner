@@ -9,12 +9,25 @@ import { useEffect } from 'react';
 import { generatePath } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { chatSession } from '@/config/AIModal';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
+  import { FcGoogle } from "react-icons/fc";
+import { useGoogleLogin } from '@react-oauth/google';
+ 
 
 
 function CreateTrip(){
     const {toast} = useToast()
     const[place,setPlace] = useState();
     const[formData,setFormData] = useState([])
+    const[openDialog,setOpenDialog]= useState(false)
 
     const handleInputChange = (name, value)=>{
     
@@ -28,7 +41,13 @@ function CreateTrip(){
     },[formData])
 
     const onGenerateTrip = async() =>{
-        console.log(formData)
+        const user = localStorage.getItem('user')
+
+        if (!user){
+            setOpenDialog(true)
+            return;
+        }
+
         if(formData.numberOfDays > 5 && !formData?.location|| !formData?.budget||!formData?.people){
            toast({title: "Please enter all fields"})
            return;
@@ -106,6 +125,25 @@ function CreateTrip(){
             <div className = 'my-15 justify-end flex'>
                 <Button onClick = {onGenerateTrip} >Generate Trip</Button>
             </div>
+
+            <Dialog open={openDialog}>
+        
+            <DialogContent>
+                <DialogHeader>
+    
+                <DialogDescription>
+                   <img src = "/logo.svg"></img>
+                   <h2 className = 'font-bold text-lg mt-7'>Sign In With Google</h2>
+                   <p>Sign in to the App with Google Authentication</p>
+
+                   <Button varient = "outline" className = "w-full mt-5 flex gap-4">
+                    <FcGoogle className = 'h-7 w-7' />Sign in With Google
+                    </Button>
+                </DialogDescription>
+                </DialogHeader>
+            </DialogContent>
+            </Dialog>
+
             
         </div>
     )
