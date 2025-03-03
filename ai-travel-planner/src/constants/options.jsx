@@ -15,7 +15,7 @@ export const SelectTravelsList=[
 },{
     id:3,
     title: 'Family',
-    desc:'A group of fun loving adv',
+    desc:'A group of fun loving adventurers',
     icon:'🏡',
     people:'3 to 5 people'
 },{
