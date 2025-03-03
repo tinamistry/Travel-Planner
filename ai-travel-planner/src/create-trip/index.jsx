@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { generatePath } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { chatSession } from '@/config/AIModal';
+import axios from "axios";
 import {
     Dialog,
     DialogContent,
@@ -40,6 +41,14 @@ function CreateTrip(){
     useEffect(()=>{
     },[formData])
 
+    const login = useGoogleLogin({
+        onSuccess: (codeResp) => {
+            console.log("Google login successful:", codeResp);
+            GetUserProfile(codeResp);
+        },
+        onError: (error) => console.log("Google login error:", error)
+    });
+
     const onGenerateTrip = async() =>{
         const user = localStorage.getItem('user')
 
@@ -62,6 +71,20 @@ function CreateTrip(){
         const result = await chatSession.sendMessage(FINAL_PROMPT);
 
         console.log(result?.response?.text())
+    }
+
+    const GetUserProfile=(tokenInfo)=>{
+        axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenInfo?.access_token}`,{
+            headers:{
+                Authorization:`Bearer ${tokenInfo?.access_token}`,
+                Accept:'Application/json'
+            }
+        }).then((resp)=>{
+            console.log(resp)
+            localStorage.setItem('user', JSON.stringify(resp.data));
+            setOpenDialog(false)
+            onGenerateTrip();
+        })
     }
 
     return(
@@ -136,7 +159,7 @@ function CreateTrip(){
                    <h2 className = 'font-bold text-lg mt-7'>Sign In With Google</h2>
                    <p>Sign in to the App with Google Authentication</p>
 
-                   <Button varient = "outline" className = "w-full mt-5 flex gap-4">
+                   <Button varient = "outline" className = "w-full mt-5 flex gap-4" onClick={login}>
                     <FcGoogle className = 'h-7 w-7' />Sign in With Google
                     </Button>
                 </DialogDescription>
